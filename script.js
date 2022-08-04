@@ -118,12 +118,13 @@ function APIRequest() {
 // call function to update trader data initially
 updateTraderData()
 
-// declare funtion to check if a date is in the past
+// declare function to check if a date is in the past
 function dateInPast (firstDate, secondDate) {
     //if (firstDate.setHours(0, 0, 0, 0) < secondDate.setHours(0, 0, 0, 0)) {
     //    return true;
     //}
     //return false;
+    
     // shitty workaround here:
     let timeTxt = timeToGo(firstDate, false, "poe", true, 0, false, true) + ""
     if (timeTxt.slice(0,1) == "-") {
@@ -553,12 +554,12 @@ function updateBaro() {
                     // select correct planet image
                     // load the old target planet so it can be displayed correctly
                     last_target_planet = JSON.parse(localStorage.getItem("savedLastTarget"))
-                    target_planet_imageEL.src = getPlanetImage(last_target_planet)                                      // TODO: (Fix the planet selection) // Check if the Fix actually works
+                    target_planet_imageEL.src = getPlanetImage(last_target_planet) 
                     planetImageSet = true
 
                 }
                 else {
-                    // if baro arrrived in the void                                 // < - - - - - FIXED (No animation for void fade-in)
+                    // if baro arrrived in the void
                     // move void to the middle
                     if (voidPos < VoidMiddlePos) {
                         void_imageEL.style.left = voidPos + movSpd + "px"
@@ -590,7 +591,7 @@ function updateBaro() {
     }
 }
 
-// declare wallpaper property listener
+// declare wallpaper property listener (this is the part for the customization via Wallpaper Engine)
 // @ts-ignore
 window.wallpaperPropertyListener = {
     applyUserProperties: function (properties) {
