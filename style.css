@@ -1,0 +1,179 @@
+@font-face {
+    font-family: "Audiowide-Regular";
+    src: url('fonts/Audiowide/Audiowide-Regular.eot'); /* IE9 Compat Modes */
+    src: url('fonts/Audiowide/Audiowide-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('fonts/Audiowide/Audiowide-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+        url('fonts/Audiowide/Audiowide-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+        url('fonts/Audiowide/Audiowide-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+        url('fonts/Audiowide/Audiowide-Regular.svg#svgFontName') format('svg'); /* Legacy iOS */
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Flareserif821 BT';
+    src: url('fonts/Flareserif_821/Flareserif821BT-Roman.eot');
+    src: url('fonts/Flareserif_821/Flareserif821BT-Roman.eot?#iefix') format('embedded-opentype'), 
+         url('fonts/Flareserif_821/Flareserif821BT-Roman.woff2') format('woff2'), 
+         url('fonts/Flareserif_821/Flareserif821BT-Roman.woff') format('woff'), 
+         url('fonts/Flareserif_821/flareserif_821_bt.ttf') format('truetype'), 
+         url('fonts/Flareserif_821/Flareserif821BT-Roman.svg#Flareserif821BT-Roman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+html {
+    zoom: 0.8; 
+
+}
+
+body {
+    overflow: hidden; /* Hide scrollbars */
+  }
+
+body {
+    background-image: url("images/background.png");
+    background-size:cover;
+    background-color: lightblue;
+    font-family: "Audiowide-Regular", sans-serif;
+    color: white;
+    
+}
+
+p{
+    background-color: darkblue;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    font-size: 50px;
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 170px;
+    width: 800px;
+    top: 40%;
+}
+
+#time {
+    display: block;
+    width: 1200px;
+    height: 110px;
+    line-height: 110px;
+    font-size: 90px;
+    background-image: url("images/black_bar.png");
+    background-position: center;
+    background-color: unset;
+   *font-family: "Flareserif821 BT", "Audiowide-Regular", sans-serif;
+}
+
+#timer_image {
+    display: block;
+    margin-left: auto;
+    margin-right: -500px;
+    z-index: 5;
+}
+
+#timer_planet_image {
+    display: block;
+    margin-left: -500px;
+    margin-right: auto;
+}
+
+.timer_image_container {
+    display: flex;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+
+#arrow {
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: -450px;
+    z-index: -1;
+}
+
+#baro_text {
+    background-color: unset;
+    font-size: 70px;
+    width: 1000px;
+}
+
+#countdown {
+    background-color: unset;
+    font-size: 70px;
+    margin-top: -100px;
+}
+
+.baro_animation {
+    padding-bottom: 500px;
+    max-width: 2000px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -130px;
+    position: relative;
+}
+
+#void {
+    float: left;
+    width: 500px;
+    height: auto;
+    padding-left: 200px;
+    z-index: 50;
+    position: relative;
+    margin-top: -30px;
+}
+
+#white_line {
+    z-index: 100;
+    width: 1000px;
+    height: 20px;
+    margin-bottom: -200px;
+    margin-left: -100px;
+    position: relative;
+    z-index: -2;
+}
+
+#target_planet {
+    float: right;
+    width: 500px;
+    height: auto;
+    padding-right: 200px;
+    z-index: 50;
+    position: relative;
+    margin-top: -30px;
+}
+
+#baros_ship {
+    position: relative;
+    height: 100px;
+    margin-bottom: -240px;
+    z-index: -1; /* -1 */
+    margin-left: 450px;
+    margin-top: 155px;
+
+
+}
+
+#top_space{
+    height: 0px;
+    margin: 0px;
+}
+
+#internet_warning_box{
+    position: relative;
+    margin-top: -450px;
+    z-index: 100;
+    opacity: 0;
+}
+
+#internet_warning {
+    background-color: unset;
+    color: red;
+}
