@@ -20,7 +20,7 @@ When you use this project with Wallpaper Engine, you can customize it via the Wa
 Customizing the Wallpaper settings is probably required, because this wallpaper neither scales nor positions itself automatically. 
 Even the Baro Ki'teer Timer can be hidden, if you don't like it. 
 
-![image](https://user-images.githubusercontent.com/79416867/182860792-238e5a6c-5ff2-45c8-bd15-3cfc64c911b6.png)
+![image](https://user-images.githubusercontent.com/79416867/182892025-89b91d22-dadc-4d2f-9cfe-c9156c9d5a98.png)
 
 ## Disclaimer & Info
 - This is my first JS project, so the code is pretty janky. Especially the networking.
