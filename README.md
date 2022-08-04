@@ -26,3 +26,7 @@ Even the Baro Ki'teer Timer can be hidden, if you don't like it.
 This is my first JS project, so the code is pretty janky. Especially the networking.
 
 ## [You can try this Wallpaper out on Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2742776809)
+
+***
+
+License: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
