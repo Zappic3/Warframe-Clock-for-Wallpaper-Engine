@@ -22,9 +22,14 @@ Even the Baro Ki'teer Timer can be hidden, if you don't like it.
 
 ![image](https://user-images.githubusercontent.com/79416867/182860792-238e5a6c-5ff2-45c8-bd15-3cfc64c911b6.png)
 
-## Disclaimer
-This is my first JS project, so the code is pretty janky. Especially the networking.
-
+## Disclaimer & Info
+- This is my first JS project, so the code is pretty janky. Especially the networking.
+- The Baro Animations are a little bit weird, I know.
+- Known Error: When Baro returns, and the wallpaper is reloaded, the planet isn't displayed correctly.
+- If you're having issues with this wallpaper, try clearing the local storage by checking the "[Clear Local Storage]" checkbox. 
+  (see picture above)
+- [More Informations on Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2742776809)
+ 
 ## [You can try this Wallpaper out on Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2742776809)
 
 ***
