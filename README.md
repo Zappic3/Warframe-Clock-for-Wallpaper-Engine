@@ -1,7 +1,9 @@
 # Warframe-Clock-for-Wallpaper-Engine
 A Warframe themed web-wallpaper that displays a clock, inspired by the Plains of Eidolon in game timer, and a timer for Baro Ki'teer's next arrival.
-[Open Web Preview](https://zappic3.github.io/Warframe-Clock-for-Wallpaper-Engine)
-[Try it out on Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2742776809)
+
+-> [Open web preview](https://zappic3.github.io/Warframe-Clock-for-Wallpaper-Engine)
+
+-> [Try it out on Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2742776809)
 
 ![2022-08-04 14_41_14-Steam](https://user-images.githubusercontent.com/79416867/182860588-f3a33b5e-9783-465e-89da-8d29c29ef64c.png)
 
