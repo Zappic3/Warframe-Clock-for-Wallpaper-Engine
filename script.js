@@ -565,7 +565,7 @@ function updateBaro() {
             let baros_ship_left_image = "images/baros_ship_left.png"
 
 
-            let movSpd = 1
+            let movSpd = 5
             let opSpd =  0.05
             
             let ToTargPlanetAnimRemDays = 1
