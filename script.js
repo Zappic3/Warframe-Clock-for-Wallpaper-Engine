@@ -10,7 +10,7 @@ const void_imageEL = document.getElementById("void")
 const white_line_imageEL = document.getElementById("white_line")
 const baros_shipEL = document.getElementById("baros_ship")
 const topSpaceEL = document.getElementById("top_space")
-const internetWarningBoxEL = document.getElementById("internet_warning_box")
+const internetWarningEL = document.getElementById("internet_warning")
 
 // declare setting variables
 var time_formatting = "poe"
@@ -42,13 +42,44 @@ const planets = {
 var target_planet
 var last_target_planet
 
-// declare functions for countdown calculations in case of offline use   <--------  Dosnt Work
-function calculateScheduelOffline() {
-    let anchorActivation = isoToObj("2021-12-31T14:00:00.000Z")
-    let anchorExpiry = isoToObj("2022-01-02T14:00:00.000Z")
-    let baroTripTime = 14
+// offline schedule calculator for Baro K'Teer
+function calculateScheduelOffline(anchorActivationISO = "2023-01-06T13:00:00Z", planetOffset = 0) {
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+    const CYCLE_DAYS = 14;      // Baro arrives every 2 weeks
+    const ACTIVE_DAYS = 2;      // stays for 48 hours
+    const PLANETS = ["Earth", "Mercury", "Saturn", "Pluto"];
 
+    // Anchor event (a known arrival) in UTC
+    const anchorActivation = new Date(anchorActivationISO);
+    const nowUTC = new Date(Date.now()); // current UTC reference (ISO math uses UTC internally)
+
+    // How many full 14-day cycles have passed since anchor
+    const diffMs = nowUTC.getTime() - anchorActivation.getTime();
+    const cycles = Math.floor(diffMs / (CYCLE_DAYS * MS_PER_DAY));
+
+    // Compute current/next activation + expiry
+    let currentActivation = new Date(anchorActivation.getTime() + cycles * CYCLE_DAYS * MS_PER_DAY);
+    let currentExpiry = new Date(currentActivation.getTime() + ACTIVE_DAYS * MS_PER_DAY);
+
+    // If current period already ended, move to next cycle
+    if (nowUTC >= currentExpiry) {
+        currentActivation = new Date(currentActivation.getTime() + CYCLE_DAYS * MS_PER_DAY);
+        currentExpiry = new Date(currentActivation.getTime() + ACTIVE_DAYS * MS_PER_DAY);
+    }
+
+    // Planet rotation (4-planet sequence with optional offset)
+    const planetIndex = (cycles + planetOffset) % PLANETS.length;
+    const location = `${PLANETS[planetIndex]} Relay (${PLANETS[planetIndex]})`;
+
+    // Same format as API
+    return {
+        activation: currentActivation.toISOString(),
+        expiry: currentExpiry.toISOString(),
+        location,
+    };
 }
+
+
 
 // declare function to get data from api
 var debugging_mode = false
@@ -102,16 +133,64 @@ function updateTraderData(force_update = false) {
 }
 
 function callAPI() {
-    if (callingApi == 0) {
-        callingApi = setInterval(APIRequest, 5000)
+    if (callingApi === 0) {
+        apiRequestNumber = 0; // reset attempt counter when we start trying
+        callingApi = setInterval(APIRequest, 5000);
+        // Also perform one immediate attempt right away so user doesn't wait 5s
+        APIRequest();
     }
 }
 
-function APIRequest() {
-    apiRequestNumber = apiRequestNumber + 1
-    fetch("https://api.warframestat.us/pc/voidTrader")
-    .then(jsonData => jsonData.json())
-    .then(data => rawApiData = data) 
+async function APIRequest() {
+    apiRequestNumber = apiRequestNumber + 1;
+
+    // AbortController + timeout to avoid stuck requests
+    const controller = new AbortController();
+    const timeoutMs = 4000; // adjust timeout as needed (4s is usually good)
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        const resp = await fetch("https://api.warframestat.us/pc/voidTrader", { signal: controller.signal });
+
+        clearTimeout(timeoutId);
+
+        if (!resp.ok) {
+            console.warn('API returned non-OK status', resp.status);
+            throw new Error('HTTP ' + resp.status);
+        }
+
+        const data = await resp.json();
+        rawApiData = data;
+
+        // Stop retrying once we have valid data
+        if (callingApi !== 0) {
+            clearInterval(callingApi);
+            callingApi = 0;
+        }
+
+        apiRequestNumber = 0; // reset attempts on success
+        localStorage.setItem("isOfflineTime", false);
+        return;
+    } catch (err) {
+        clearTimeout(timeoutId);
+        console.warn('APIRequest failed (attempt ' + apiRequestNumber + '):', err);
+
+        // If we've reached the allowed number of attempts, stop retrying
+        if (apiRequestNumber >= apiRequestNumberLimit) {
+            if (callingApi !== 0) {
+                clearInterval(callingApi);
+                callingApi = 0;
+            }
+            // Show internet warning immediately:
+            internetWarningEL.style.opacity = "1";
+            if (typeof traderData === "undefined") {
+                traderData = calculateScheduelOffline("2023-01-06T13:00:00Z", 3);
+                localStorage.setItem("isOfflineTime", true);
+                
+            }
+        }
+        // otherwise we'll just let the interval fire again later
+    }
 }
 
 
@@ -166,7 +245,7 @@ function timeToGo(s, returnOBJ = false, resultFormatting = "poe", showSeconds = 
         var d = isoToObj(s);
     }
     // @ts-ignore
-    var diff = d - new Date();
+    var diff = d.getTime() - Date.now();
 
     // Allow for previous times
     var sign = diff < 0? '-' : '';
@@ -291,13 +370,16 @@ function updateCountdown(){
         rawApiData = undefined
         dataSaved = false
         apiRequestNumber = 0
-        internetWarningBoxEL.style.opacity = "0"
+        internetWarningEL.style.opacity = "0"
     }
-    else if (apiRequestNumber >= apiRequestNumberLimit) {
+
+    var isOfflineTime = localStorage.getItem("isOfflineTime")
+    if (typeof isOfflineTime !== "undefined" && isOfflineTime == true) {
         //show internet warning
-        internetWarningBoxEL.style.opacity = "1"
+        internetWarningEL.style.opacity = "1"
         // calculate offline timer
     }
+
     if(typeof traderData !== "undefined"){
         // update countdown timer
         if(dateInPast(isoToObj(traderData["activation"]), new Date())) {
@@ -423,7 +505,7 @@ function updateCountdown(){
 
 
 // update baro animation
-setInterval(updateBaro, 10);
+setInterval(updateBaro, 50);
 function updateBaro() {
     if(typeof traderData !== "undefined"){
         if (enable_baro_animation) {

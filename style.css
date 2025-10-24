@@ -166,14 +166,11 @@ p{
     margin: 0px;
 }
 
-#internet_warning_box{
-    position: relative;
-    margin-top: -450px;
-    z-index: 100;
-    opacity: 0;
-}
-
 #internet_warning {
     background-color: unset;
     color: red;
+    font-size: 20px;
+    white-space: nowrap;
+    margin-top: -90px;
+    opacity: 0;
 }
