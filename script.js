@@ -901,9 +901,11 @@ window.wallpaperPropertyListener = {
         }
         // show connection Warning
         if (properties.baro_countdown_show_connection_warning) {
-            internetWarningParentEL.opacity = "1"
-        } else {
-            internetWarningParentEL.opacity = "0"
+            if (properties.baro_countdown_show_connection_warning.value) {
+                internetWarningParentEL.style.opacity = "1"
+            } else {
+                internetWarningParentEL.style.opacity = "0"
+            }
         }
         // enable baro animation
         if (properties.enable_baro_animation) {
