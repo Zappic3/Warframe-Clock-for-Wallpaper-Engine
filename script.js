@@ -11,6 +11,7 @@ const white_line_imageEL = document.getElementById("white_line")
 const baros_shipEL = document.getElementById("baros_ship")
 const topSpaceEL = document.getElementById("top_space")
 const internetWarningEL = document.getElementById("internet_warning")
+const internetWarningParentEL = document.getElementById("internet_warning_parent")
 
 // declare setting variables
 var time_formatting = "poe"
@@ -19,7 +20,6 @@ var time_show_seconds = true
 var baro_countdown_formatting = "poe"
 var baro_countdown_show_seconds = true
 var enable_baro_animation = true
-var baro_show_connection_warning = true
 
 // set all parts of the baro animation to invisible for a nice fade-in animation
 target_planet_imageEL.style.opacity = "" + 0
@@ -44,7 +44,7 @@ var target_planet
 var last_target_planet
 
 // offline schedule calculator for Baro K'Teer
-function calculateScheduelOffline(anchorActivationISO = "2023-01-06T13:00:00Z", planetOffset = 0) {
+function calculateScheduleOffline(anchorActivationISO = "2023-01-08T13:00:00Z", planetOffset = 0) {
     const MS_PER_DAY = 24 * 60 * 60 * 1000;
     const CYCLE_DAYS = 14;      // Baro arrives every 2 weeks
     const ACTIVE_DAYS = 2;      // stays for 48 hours
@@ -59,18 +59,26 @@ function calculateScheduelOffline(anchorActivationISO = "2023-01-06T13:00:00Z", 
     const cycles = Math.floor(diffMs / (CYCLE_DAYS * MS_PER_DAY));
 
     // Compute current/next activation + expiry
-    let currentActivation = new Date(anchorActivation.getTime() + cycles * CYCLE_DAYS * MS_PER_DAY);
-    let currentExpiry = new Date(currentActivation.getTime() + ACTIVE_DAYS * MS_PER_DAY);
+
+
+    let currentExpiry = new Date(anchorActivation.getTime() + cycles * CYCLE_DAYS * MS_PER_DAY);
+    let currentActivation = new Date(currentExpiry.getTime() - ACTIVE_DAYS * MS_PER_DAY);
 
     // If current period already ended, move to next cycle
     if (nowUTC >= currentExpiry) {
-        currentActivation = new Date(currentActivation.getTime() + CYCLE_DAYS * MS_PER_DAY);
-        currentExpiry = new Date(currentActivation.getTime() + ACTIVE_DAYS * MS_PER_DAY);
+        currentExpiry = new Date(currentExpiry.getTime() + CYCLE_DAYS * MS_PER_DAY);
+        currentActivation = new Date(currentExpiry.getTime() - ACTIVE_DAYS * MS_PER_DAY);
     }
 
     // Planet rotation (4-planet sequence with optional offset)
     const planetIndex = (cycles + planetOffset) % PLANETS.length;
     const location = `${PLANETS[planetIndex]} Relay (${PLANETS[planetIndex]})`;
+
+    console.log("Now UTC:", nowUTC.toISOString());
+        console.log("Anchor:", anchorActivation.toISOString());
+        console.log("Diff days:", diffMs / MS_PER_DAY);
+        console.log("Cycles:", cycles);
+        console.log("Planet index:", (cycles + planetOffset) % PLANETS.length);
 
     // Same format as API
     return {
@@ -137,11 +145,6 @@ function updateTraderData(force_update = false) {
     }
 }
 
-function changeInternetWarningOpacity(state) {
-    if (baro_show_connection_warning) {
-        internetWarningEL.style.opacity = state+"";
-    }
-}
 
 function callAPI() {
     if (callingApi === 0) {
@@ -201,9 +204,9 @@ async function APIRequest() {
                 callingApi = 0;
             }
             // Show internet warning immediately:
-            changeInternetWarningOpacity("1");
+            internetWarningEL.style.opacity = "1"
             if (typeof traderData === "undefined") {
-                traderData = calculateScheduelOffline("2023-01-06T13:00:00Z", 3);
+                traderData = calculateScheduleOffline("2023-01-08T13:00:00Z", 3);
                 localStorage.setItem("isOfflineTime", true);
                 startOfflineRetryLoop(OFFLINE_RETRY_MS)
             }
@@ -236,7 +239,7 @@ function startOfflineRetryLoop(interval) {
 updateTraderData()
 if (localStorage.getItem("isOfflineTime") === "true") {
     startOfflineRetryLoop(OFFLINE_RETRY_MS);
-    changeInternetWarningOpacity("1")
+    internetWarningEL.style.opacity = "1"
 }
 
 // declare function to check if a date is in the past
@@ -412,13 +415,13 @@ function updateCountdown(){
         rawApiData = undefined
         dataSaved = false
         apiRequestNumber = 0
-        changeInternetWarningOpacity("0")
+        internetWarningEL.style.opacity = "0"
     }
 
     var isOfflineTime = localStorage.getItem("isOfflineTime")
     if (typeof isOfflineTime !== "undefined" && isOfflineTime == true) {
         //show internet warning
-        changeInternetWarningOpacity("1")
+        internetWarningEL.style.opacity = "1"
         
     }
 
@@ -896,9 +899,11 @@ window.wallpaperPropertyListener = {
                 //baro_timer_textEL.style.height = 0
             }
         }
-        // show internet Warning
-        if (properties.baro_countdown_hide_connection_warning) {
-            baro_show_connection_warning = !properties.baro_countdown_hide_connection_warning
+        // show connection Warning
+        if (properties.baro_countdown_show_connection_warning) {
+            internetWarningParentEL.opacity = "1"
+        } else {
+            internetWarningParentEL.opacity = "0"
         }
         // enable baro animation
         if (properties.enable_baro_animation) {
