@@ -1,0 +1,208 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "[h1]Beschreibung[/h1]\r\nDieser Hintergrund besteht aus einer Uhr, die dem Ebenen von Eidolon Timer aus dem Spiel Warframe nachempfunden ist.\r\nDes Weiteren enthält dieser Hintergrund einen (optionalen) Baro Ki'teer Timer. Dieser zeigt die verbleibende Zeit bis Baro zurückkehrt / aufbricht sowie den Planeten auf dem er sich gerade befindet.\r\n\r\n[h1]Zusätzliche Informationen[h1]\r\n\r\n[list]\r\n[*]Dieser Hintergrund skaliert [b]nicht[/b] automatisch! Du kannst die Größe und Positionierung der Hintergrundobjekte mit den Reglern [b]Scale[/b] und [b]Top Space[/b] einstellen.\r\n\r\n[*]Falls der Hintergrund zu groß im Verhältnis zur Bildschirmgröße skaliert ist, verschieben sich Elemente der Baro Ki'teer Animation.\r\n\r\n[*]Falls der Hintergrund nicht funktioniert oder eine falsche Zeit beim Baro Ki'teer Timer angezeigt wird, hilft es möglicherweise den Local Storage zurück zusetzten. Dies kann getan werden, indem du in den Einstellungen dieses Hintergrundes die Option [b][Clear Local Storage][/b] anklickst. (Diese Option befindet sich ganz unten)\r\n\r\n[*]Eine Internetverbindung wird alle [b]12-14[/b] Tage benötigt, um Baro's neue Ankunfts-/Abfugzeiten und den neuen Ankunftsplaneten zu laden. (dies ist nur wichtig, wenn du den Baro Ki'teer Timer verwendest, die Uhr funktioniert auch ohne Internetverbindung).\r\n[/list]\r\n\r\n[url=https://github.com/Zappic3/Warframe-Clock-for-Wallpaper-Engine/][b]Mehr Informationen auf GitHub[/b][/url]\r\n\r\n[hr][/hr]\r\n[img=https://i.imgur.com/pKh5B88.gif][/img]",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"baro_countdown_formatting" : 
+			{
+				"condition" : "enable_baro_countdown.value == true",
+				"index" : 7,
+				"options" : 
+				[
+					{
+						"label" : "12:34:56",
+						"value" : "clock"
+					},
+					{
+						"label" : "12h 34m 56s",
+						"value" : "poe"
+					}
+				],
+				"order" : 107,
+				"text" : "[Baro] Countdown Formatting",
+				"type" : "combo",
+				"value" : "poe"
+			},
+			"baro_countdown_show_connection_warning" : 
+			{
+				"index" : 5,
+				"order" : 105,
+				"text" : "[Baro] Show Connection Warning",
+				"type" : "bool",
+				"value" : true
+			},
+			"baro_countdown_show_seconds" : 
+			{
+				"condition" : "enable_baro_countdown.value == true",
+				"index" : 8,
+				"order" : 108,
+				"text" : "[Baro] Show Seconds",
+				"type" : "bool",
+				"value" : false
+			},
+			"barofont" : 
+			{
+				"condition" : "enable_baro_countdown.value == true",
+				"index" : 9,
+				"options" : 
+				[
+					{
+						"label" : "Audiowide",
+						"value" : "Audiowide-Regular"
+					},
+					{
+						"label" : "Flareserif",
+						"value" : "Flareserif821 BT"
+					}
+				],
+				"order" : 109,
+				"text" : "[Baro] Text Font",
+				"type" : "combo",
+				"value" : "Audiowide-Regular"
+			},
+			"barotimerfont" : 
+			{
+				"condition" : "enable_baro_countdown.value == true",
+				"index" : 10,
+				"options" : 
+				[
+					{
+						"label" : "Audiowide",
+						"value" : "Audiowide-Regular"
+					},
+					{
+						"label" : "Flareserif",
+						"value" : "Flareserif821 BT"
+					}
+				],
+				"order" : 110,
+				"text" : "[Baro] Countdown Font",
+				"type" : "combo",
+				"value" : "Audiowide-Regular"
+			},
+			"clear_local_storage" : 
+			{
+				"index" : 12,
+				"order" : 112,
+				"text" : "[Clear Local Storage] -> If you experience problems with this wallpaper, clearing the local storage may solve the issue",
+				"type" : "bool",
+				"value" : false
+			},
+			"clockfont" : 
+			{
+				"index" : 4,
+				"options" : 
+				[
+					{
+						"label" : "Audiowide",
+						"value" : "Audiowide-Regular"
+					},
+					{
+						"label" : "Flareserif",
+						"value" : "Flareserif821 BT"
+					}
+				],
+				"order" : 104,
+				"text" : "[Clock] Font",
+				"type" : "combo",
+				"value" : "Flareserif821 BT"
+			},
+			"enable_baro_animation" : 
+			{
+				"condition" : "",
+				"index" : 11,
+				"order" : 111,
+				"text" : "[Baro] Enable Animation",
+				"type" : "bool",
+				"value" : true
+			},
+			"enable_baro_countdown" : 
+			{
+				"index" : 6,
+				"order" : 106,
+				"text" : "[Baro] Enable Countdown",
+				"type" : "bool",
+				"value" : true
+			},
+			"scale" : 
+			{
+				"fraction" : true,
+				"index" : 0,
+				"max" : 2,
+				"min" : 0.1,
+				"order" : 100,
+				"precision" : 2,
+				"step" : 0.1,
+				"text" : "[General] Scale",
+				"type" : "slider",
+				"value" : 0.8
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"time_formatting" : 
+			{
+				"index" : 2,
+				"options" : 
+				[
+					{
+						"label" : "12:34:56",
+						"value" : "clock"
+					},
+					{
+						"label" : "12h 34m 56s",
+						"value" : "poe"
+					},
+					{
+						"label" : "12:34:56 (AM/PM)",
+						"value" : "clock_pm"
+					},
+					{
+						"label" : "12h 34m 56s (AM/PM)",
+						"value" : "poe_pm"
+					}
+				],
+				"order" : 102,
+				"text" : "[Clock] Time Formatting",
+				"type" : "combo",
+				"value" : "poe"
+			},
+			"time_show_seconds" : 
+			{
+				"index" : 3,
+				"order" : 103,
+				"text" : "[Clock] Show Seconds",
+				"type" : "bool",
+				"value" : true
+			},
+			"topspace" : 
+			{
+				"fraction" : false,
+				"index" : 1,
+				"max" : 1000,
+				"min" : 0,
+				"order" : 101,
+				"text" : "[General] Top Space",
+				"type" : "slider",
+				"value" : 100
+			}
+		}
+	},
+	"preview" : "preview.gif",
+	"ratingsex" : "none",
+	"ratingviolence" : "none",
+	"tags" : [ "Game" ],
+	"title" : "Warframe Ebenen von Eidolon Uhr/ Animierter Baro Ki'teer Timer  [Personalisierbar]",
+	"type" : "web",
+	"version" : 1,
+	"visibility" : "public",
+	"workshopid" : "2742776809",
+	"workshopurl" : "steam://url/CommunityFilePage/2742776809"
+}
