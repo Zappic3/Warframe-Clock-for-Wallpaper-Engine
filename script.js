@@ -19,6 +19,7 @@ var time_show_seconds = true
 var baro_countdown_formatting = "poe"
 var baro_countdown_show_seconds = true
 var enable_baro_animation = true
+var baro_show_connection_warning = true
 
 // set all parts of the baro animation to invisible for a nice fade-in animation
 target_planet_imageEL.style.opacity = "" + 0
@@ -89,6 +90,10 @@ var rawApiData
 var apiRequestNumber = 0
 var apiRequestNumberLimit = 3
 var callingApi = 0
+var offlineRetryInterval = 0;        // interval id for periodic attempts while offline
+const OFFLINE_RETRY_MS = 20 * 60 * 1000; // 5 minutes between retries (adjustable)
+let offlineRetryLoop = null;
+
 function updateTraderData(force_update = false) {
     if (debugging_mode) {
         traderData = {
@@ -132,6 +137,12 @@ function updateTraderData(force_update = false) {
     }
 }
 
+function changeInternetWarningOpacity(state) {
+    if (baro_show_connection_warning) {
+        internetWarningEL.style.opacity = state+"";
+    }
+}
+
 function callAPI() {
     if (callingApi === 0) {
         apiRequestNumber = 0; // reset attempt counter when we start trying
@@ -170,6 +181,14 @@ async function APIRequest() {
 
         apiRequestNumber = 0; // reset attempts on success
         localStorage.setItem("isOfflineTime", false);
+
+        // stop periodic offline retry if running
+        if (offlineRetryInterval !== 0) {
+            clearInterval(offlineRetryInterval);
+            offlineRetryInterval = 0;
+            console.info("Offline retry loop cleared — API recovered.");
+        }
+
         return;
     } catch (err) {
         clearTimeout(timeoutId);
@@ -182,11 +201,11 @@ async function APIRequest() {
                 callingApi = 0;
             }
             // Show internet warning immediately:
-            internetWarningEL.style.opacity = "1";
+            changeInternetWarningOpacity("1");
             if (typeof traderData === "undefined") {
                 traderData = calculateScheduelOffline("2023-01-06T13:00:00Z", 3);
                 localStorage.setItem("isOfflineTime", true);
-                
+                startOfflineRetryLoop(OFFLINE_RETRY_MS)
             }
         }
         // otherwise we'll just let the interval fire again later
@@ -194,8 +213,31 @@ async function APIRequest() {
 }
 
 
+function startOfflineRetryLoop(interval) {
+    // Avoid duplicates
+    if (offlineRetryLoop !== null) return;
+
+    console.log("Starting offline retry loop...");
+    offlineRetryLoop = setInterval(async () => {
+        console.log("Retrying API connection...");
+        await APIRequest();
+
+        // If we successfully get API data, stop retrying
+        if (localStorage.getItem("isOfflineTime") === "false") {
+            console.log("API reconnected successfully. Stopping retry loop.");
+            clearInterval(offlineRetryLoop);
+            offlineRetryLoop = null;
+        }
+    }, interval);
+}
+
+
 // call function to update trader data initially
 updateTraderData()
+if (localStorage.getItem("isOfflineTime") === "true") {
+    startOfflineRetryLoop(OFFLINE_RETRY_MS);
+    changeInternetWarningOpacity("1")
+}
 
 // declare function to check if a date is in the past
 function dateInPast (firstDate, secondDate) {
@@ -370,16 +412,17 @@ function updateCountdown(){
         rawApiData = undefined
         dataSaved = false
         apiRequestNumber = 0
-        internetWarningEL.style.opacity = "0"
+        changeInternetWarningOpacity("0")
     }
 
     var isOfflineTime = localStorage.getItem("isOfflineTime")
     if (typeof isOfflineTime !== "undefined" && isOfflineTime == true) {
         //show internet warning
-        internetWarningEL.style.opacity = "1"
-        // calculate offline timer
+        changeInternetWarningOpacity("1")
+        
     }
 
+    // calculate offline timer
     if(typeof traderData !== "undefined"){
         // update countdown timer
         if(dateInPast(isoToObj(traderData["activation"]), new Date())) {
@@ -852,6 +895,10 @@ window.wallpaperPropertyListener = {
                 //countdownEl.style.height = 0 // nochmal was besseres hierfür überlegen
                 //baro_timer_textEL.style.height = 0
             }
+        }
+        // show internet Warning
+        if (properties.baro_countdown_hide_connection_warning) {
+            baro_show_connection_warning = !properties.baro_countdown_hide_connection_warning
         }
         // enable baro animation
         if (properties.enable_baro_animation) {
