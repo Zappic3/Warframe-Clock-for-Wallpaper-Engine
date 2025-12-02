@@ -44,7 +44,7 @@ var target_planet
 var last_target_planet
 
 // offline schedule calculator for Baro K'Teer
-function calculateScheduleOffline(anchorActivationISO = "2023-01-08T13:00:00Z", planetOffset = 0) {
+function calculateScheduleOffline(anchorActivationISO = "2023-02-12T13:00:00Z", planetOffset = 0) {
     const MS_PER_DAY = 24 * 60 * 60 * 1000;
     const CYCLE_DAYS = 14;      // Baro arrives every 2 weeks
     const ACTIVE_DAYS = 2;      // stays for 48 hours
@@ -98,6 +98,7 @@ var rawApiData
 var apiRequestNumber = 0
 var apiRequestNumberLimit = 3
 var callingApi = 0
+const WORLDSTATE_API = "https://api.warframe.com/cdn/worldState.php";
 var offlineRetryInterval = 0;        // interval id for periodic attempts while offline
 const OFFLINE_RETRY_MS = 20 * 60 * 1000; // 5 minutes between retries (adjustable)
 let offlineRetryLoop = null;
@@ -160,11 +161,11 @@ async function APIRequest() {
 
     // AbortController + timeout to avoid stuck requests
     const controller = new AbortController();
-    const timeoutMs = 4000; // adjust timeout as needed (4s is usually good)
+    const timeoutMs = 4000; // adjust timeout as needed
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
-        const resp = await fetch("https://api.warframestat.us/pc/voidTrader", { signal: controller.signal });
+        const resp = await fetch(WORLDSTATE_API, { signal: controller.signal });
 
         clearTimeout(timeoutId);
 
@@ -174,7 +175,23 @@ async function APIRequest() {
         }
 
         const data = await resp.json();
-        rawApiData = data;
+
+        // Parse VoidTrader data from new API
+        const traders = data["VoidTraders"];
+        if (traders && traders.length > 0) {
+            const trader = traders[0];
+            const activation = new Date(parseInt(trader.Activation.$date.$numberLong)).toISOString();
+            const expiry = new Date(parseInt(trader.Expiry.$date.$numberLong)).toISOString();
+
+            traderData = {
+                activation: activation,
+                expiry: expiry,
+                location: trader.Node || "Unknown Relay"
+            };
+            rawApiData = traderData;
+        } else {
+            traderData = undefined;
+        }
 
         // Stop retrying once we have valid data
         if (callingApi !== 0) {
@@ -206,7 +223,7 @@ async function APIRequest() {
             // Show internet warning immediately:
             internetWarningEL.style.opacity = "1"
             if (typeof traderData === "undefined") {
-                traderData = calculateScheduleOffline("2023-01-08T13:00:00Z", 3);
+                traderData = calculateScheduleOffline("2023-02-12T13:00:00Z", 3);
                 localStorage.setItem("isOfflineTime", true);
                 startOfflineRetryLoop(OFFLINE_RETRY_MS)
             }
